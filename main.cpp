@@ -88,7 +88,8 @@ int main()
                 fout<<repet+1<< endl;
                 for(i = 0; i < (NbGen / pas) + 1; i++)
                 {
-                    for (j = 0; j < 17; j++)
+                    fout << i*pas << " ";
+		    for (j = 0; j < 17; j++)
                         fout << allAverages[i][j] << " ";
                     fout << endl;
                 }

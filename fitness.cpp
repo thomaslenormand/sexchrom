@@ -94,7 +94,7 @@ double Wfemale(ind &parent, double expdom, double smax, double Qopt, double I, i
                 //stabilizing selection fitness effect
                 //                    w = w * exp(-I*pow((explv-Qopt),2)); // OLD
                 //effectLocus = 1-smax*(1-exp(-I*pow((explv-Qopt),2))); // OLD
-                effectLocus = 1-smax*(1-explv*exp(1-explv/2)/2);      // NEW
+                effectLocus = 1-smax*(1-explv*exp(1-explv/Qopt)/Qopt);      // NEW
 
                 if (parent.gene[allele2] >= parent.gene[allele1]) // if second allele fittest
                 {
@@ -140,7 +140,7 @@ double Wfemale(ind &parent, double expdom, double smax, double Qopt, double I, i
                 //stabilizing selection fitness effect
                 //                    w = w * exp(-I*pow((explv-Qopt),2)); // OLD
                 //effectLocus = 1-smax*(1-exp(-I*pow((explv-Qopt),2))); // OLD
-                effectLocus = 1-smax*(1-explv*exp(1-explv/2)/2);      // NEW
+                effectLocus = 1-smax*(1-explv*exp(1-explv/Qopt)/Qopt);      // NEW
 
                 if (parent.gene[allele2] >= parent.gene[allele1]) // if second allele fittest
                     // (n1+n2)/2 * [(o1+o2)/2*cis_x2 + cis_x1]

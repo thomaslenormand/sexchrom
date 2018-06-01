@@ -8,7 +8,7 @@ double Wmale(ind &parent, double expdom, double smax, double Qopt, double I, int
 {
     int j, allele1, allele2;
     double w = 1.0;
-    double e1, e2, c1, c2, explv, h, effectLocus;
+    double e1, e2, c1, c2, explv, h, effectLocus,explvscaled;
 
     double transDro = (((parent.trans[0] > 0) ? parent.trans[0] : 0) + ((parent.trans[3] > 0) ? parent.trans[3] : 0))/2; // the effect of each allele is set to zero if negative
 
@@ -29,8 +29,16 @@ double Wmale(ind &parent, double expdom, double smax, double Qopt, double I, int
 
         else
         {
-            //effectLocus = 1-smax*(1-exp(-I*pow((explv-Qopt),2))); // OLD
-            effectLocus = 1-smax*(1-explv*exp(1-explv/Qopt)/Qopt);      // NEW
+            //effectLocus = 1-smax*(1-exp(-I*pow((explv-Qopt),2))); // OLD Gaussian version
+            //effectLocus = 1-smax*(1-explv*exp(1-explv/Qopt)/Qopt);      // OLD gamma version
+            if (explv < Qopt)
+                explvscaled= Qopt/explv - 1;
+            else
+                explvscaled= explv/Qopt -1 ;   //This trick scales the fitness effect with the ratio of expression compared to Qopt, in one direction or another, and insures that fitness is always 1-smax with 0 expression
+
+            effectLocus = 1-smax*(1-exp(-I*explvscaled*explvscaled));      // NEW
+
+
 
             if (parent.gene[allele2] >= parent.gene[allele1]) // if second allele fittest
             {
@@ -66,7 +74,7 @@ double Wfemale(ind &parent, double expdom, double smax, double Qopt, double I, i
 {
     int j;
     double w = 1.0;
-    double e1, e2, c1, c2, explv, h, effectLocus;
+    double e1, e2, c1, c2, explv, h, effectLocus,explvscaled;
     int allele1, allele2;
 
     double transMam = (((parent.trans[2] > 0) ? parent.trans[2] : 0) + ((parent.trans[5] > 0) ? parent.trans[5] : 0))/2;
@@ -94,7 +102,15 @@ double Wfemale(ind &parent, double expdom, double smax, double Qopt, double I, i
                 //stabilizing selection fitness effect
                 //                    w = w * exp(-I*pow((explv-Qopt),2)); // OLD
                 //effectLocus = 1-smax*(1-exp(-I*pow((explv-Qopt),2))); // OLD
-                effectLocus = 1-smax*(1-explv*exp(1-explv/Qopt)/Qopt);      // NEW
+                //    effectLocus = 1-smax*(1-explv*exp(1-explv/Qopt)/Qopt);      // OLD
+
+                if (explv < Qopt)
+                    explvscaled= Qopt/explv - 1;
+                else
+                    explvscaled= explv/Qopt -1 ;   //This trick scales the fitness effect with the ratio of expression compared to Qopt, in one direction or another, and insures that fitness is always 1-smax with 0 expression
+
+                effectLocus = 1-smax*(1-exp(-I*explvscaled*explvscaled));      // NEW
+
 
                 if (parent.gene[allele2] >= parent.gene[allele1]) // if second allele fittest
                 {
@@ -140,7 +156,16 @@ double Wfemale(ind &parent, double expdom, double smax, double Qopt, double I, i
                 //stabilizing selection fitness effect
                 //                    w = w * exp(-I*pow((explv-Qopt),2)); // OLD
                 //effectLocus = 1-smax*(1-exp(-I*pow((explv-Qopt),2))); // OLD
-                effectLocus = 1-smax*(1-explv*exp(1-explv/Qopt)/Qopt);      // NEW
+                //effectLocus = 1-smax*(1-explv*exp(1-explv/Qopt)/Qopt);      // OLD
+
+                if (explv < Qopt)
+                    explvscaled= Qopt/explv - 1;
+                else
+                    explvscaled= explv/Qopt -1 ;   //This trick scales the fitness effect with the ratio of expression compared to Qopt, in one direction or another, and insures that fitness is always 1-smax with 0 expression
+
+                effectLocus = 1-smax*(1-exp(-I*explvscaled*explvscaled));      // NEW
+
+
 
                 if (parent.gene[allele2] >= parent.gene[allele1]) // if second allele fittest
                     // (n1+n2)/2 * [(o1+o2)/2*cis_x2 + cis_x1]

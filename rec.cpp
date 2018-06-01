@@ -16,25 +16,25 @@ void recInit(ind &offspring, ind &father, ind &mother, double Rg, double Rc, dou
 {
     vector<double> posCoG;
     int i, j, locus, nbCo, ChrInit, strand;
-    
+
     // paternally inherited gamete
-    
-    nbCo = poisdev(ML); // number of cross-overs
+    double Rsex = Rg; // NEW linkage between the first cis reg and the sex locus. Only matters in male where the sex locus is heterozygous. Set to Rg to avoid adding a parameter
+    nbCo = poisdev(ML+Rsex); // NEW number of cross-overs
     for (j = 0; j < nbCo; j++)
         posCoG.push_back(rnd.randExc(ML)); // position of cross-over j
     sort(posCoG.begin(), posCoG.end()); // ERIC: sort indices for crossovers -- first to last
-    
+
     if (off_sex == 0) // if offspring is a male, it inherits the sex-determining locus from the proto-Y
         ChrInit = 0;
     else
         ChrInit = 1;
-    
+
     // CIS REG:
     locus = 0; // ERIC: initialize locus again
     for (j = 0; j < nbCo; j++) // ERIC: iterate over the number of crossovers
     {
         strand = ((j+ChrInit)%2)*nS;
-        while (locus * Rg < posCoG[j]) // while locus is on the left of cross-over j; note that cis regulator i is at position Rg*i
+        while (locus * Rg + Rsex < posCoG[j]) // while locus is on the left of cross-over j; note that cis regulator i is at position Rg*i
         {
             offspring.cis[locus] = father.cis[strand + locus]; // copy from chrInit if nb of Co is even; copy from other chromosome otherwise; note that (j+chrInit)%2 equals 0 when chrInit = 0 and j is even or chrInit = 1 and j is odd
             locus++;
@@ -46,13 +46,13 @@ void recInit(ind &offspring, ind &father, ind &mother, double Rg, double Rc, dou
         offspring.cis[locus] = father.cis[strand + locus];
         locus++;
     }
-    
+
     // GENES:
     locus = 0; // ERIC: initialize locus again
     for (j = 0; j < nbCo; j++) // ERIC: iterate over the number of crossovers
     {
         strand = ((j+ChrInit)%2)*nS;
-        while ((locus * Rg + Rc) < posCoG[j]) // note that position of gene i is i*Rg + Rc
+        while ((locus * Rg + Rc + Rsex) < posCoG[j]) // NEW note that position of gene i is i*Rg + Rc
         {
             offspring.gene[locus] = father.gene[strand + locus]; // copy from chrInit if nb of Co is even; copy from other chromosome otherwise; note that (j+chrInit)%2 equals 0 when chrInit = 0 and j is even or chrInit = 1 and j is odd
             locus++;
@@ -64,16 +64,16 @@ void recInit(ind &offspring, ind &father, ind &mother, double Rg, double Rc, dou
         offspring.gene[locus] = father.gene[strand + locus];
         locus++;
     }
-    
+
     // maternally inherited gamete
-    
+
     nbCo = poisdev(ML); // number of cross-overs
     for (j = 0; j < nbCo; j++)
         posCoG.push_back(rnd.randExc(ML)); // position of cross-over j
     sort(posCoG.begin(), posCoG.end()); // ERIC: sort indices for crossovers -- first to last
-    
+
     ChrInit = rnd.randInt(1); // which X chromosome contributes at position 0
-    
+
     // CIS REG:
     locus = 0; // ERIC: initialize locus again
     for (j = 0; j < nbCo; j++) // ERIC: iterate over the number of crossovers
@@ -91,7 +91,7 @@ void recInit(ind &offspring, ind &father, ind &mother, double Rg, double Rc, dou
         offspring.cis[nS+locus] = mother.cis[strand + locus];
         locus++;
     }
-    
+
     // GENES:
     locus = 0; // ERIC: initialize locus again
     for (j = 0; j < nbCo; j++) // ERIC: iterate over the number of crossovers
@@ -109,15 +109,15 @@ void recInit(ind &offspring, ind &father, ind &mother, double Rg, double Rc, dou
         offspring.gene[nS+locus] = mother.gene[strand + locus];
         locus++;
     }
-    
+
     // TRANS REGULATORS
-    
+
     for (i = 0; i < 3; i++)
     {
         // paternally inherited trans modifiers:
         ChrInit = rnd.randInt(1);
         offspring.trans[i] = father.trans[ChrInit*3+i];
-        
+
         // maternally inherited trans modifiers:
         ChrInit = rnd.randInt(1);
         offspring.trans[i+3] = mother.trans[ChrInit*3+i];

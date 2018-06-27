@@ -80,11 +80,11 @@ void recursion(int Nv, double sigv, int nbSv, int NbGenv, int NbPrelimv, int pas
         measures = new double *[nbSv];
         for(i = 0; i < nbSv; i++)
             measures[i] = new double[8];
-        popAverages = new double [5];
+        popAverages = new double [7];
     }
     else
     {
-        popAverages = new double [17];
+        popAverages = new double [19];
     }
 
 	// fitnesses:
@@ -298,7 +298,8 @@ void recursion(int Nv, double sigv, int nbSv, int NbGenv, int NbPrelimv, int pas
             {
                 record_output(pop, Wtot, measures, popAverages, nbSv, Nmales, Nv, expdom);
 
-                fout << gen << " " << popAverages[0] << " " << popAverages[1] << " " << popAverages[2] << " " << popAverages[3] << " " << popAverages[4] << " " ;
+                fout << gen << " " << popAverages[0] << " " << popAverages[1] << " " << popAverages[2] << " " << popAverages[3] << " " << popAverages[4] << " " 
+			<< popAverages[5] << " " << popAverages[6] << " " ;
                 for (j = 0; j < nbSv; j++)
                     for (i = 0; i < 8; i++)
                         fout << measures[j][i] << " ";
@@ -309,7 +310,7 @@ void recursion(int Nv, double sigv, int nbSv, int NbGenv, int NbPrelimv, int pas
                 record_averages(pop, Wtot, popAverages, nbSv, Nmales, Nv, expdom, s_max);
                 
                 fout << gen << " ";
-                for (i = 0; i < 17; i++)
+                for (i = 0; i < 19; i++)
                 {
                     fout << popAverages[i] << " ";
                     allAverages[gen/pasv][i] = ((allAverages[gen/pasv][i])*Rep + popAverages[i]) / (Rep+1);

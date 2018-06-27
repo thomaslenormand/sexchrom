@@ -28,7 +28,7 @@ void ouvrirFichierS()
 
 // reads parameter values from input file,
 // returns 1 if end of input file, else returns 0
-bool lireFichier(int &Nr, double &sigr, int &nbSr, int &NbGenr, int &NbPrelimr, int &pasr, double &sr, double &s_maxr, double &Ir, double &U_gr, double &U_cr, double &Ut_dro, double &Ut_cel, double &Ut_mam, double &Rgr, double &Rcr, int &Rep, int &outputr)
+bool lireFichier(int &Nr, double &sigr, int &nbSr, int &NbGenr, int &NbPrelimr, int &pasr, double &sr, double &s_maxr, double &Ir, double &U_gr, double &U_cr, double &Ut_all, double &Ut_male, double &Ut_dro, double &Ut_cel, double &Ut_mam, double &Rgr, double &Rcr, int &Rep, int &outputr)
 {
 	int x;
 	bool term;
@@ -51,6 +51,8 @@ bool lireFichier(int &Nr, double &sigr, int &nbSr, int &NbGenr, int &NbPrelimr, 
         fscanf(fichierE,"%lf ",&Ir);
         fscanf(fichierE,"%lf ",&U_gr);
         fscanf(fichierE,"%lf ",&U_cr);
+	fscanf(fichierE,"%lf ",&Ut_all);
+	fscanf(fichierE,"%lf ",&Ut_male);
         fscanf(fichierE,"%lf ",&Ut_dro);
         fscanf(fichierE,"%lf ",&Ut_cel);
         fscanf(fichierE,"%lf ",&Ut_mam);
@@ -67,7 +69,7 @@ bool lireFichier(int &Nr, double &sigr, int &nbSr, int &NbGenr, int &NbPrelimr, 
 
 // writes parameter values in output file:
 
-void ecrireParametres(int Nv, double sigv, int nbSv, int NbGenv, int NbPrelimv, int pasv, double s, double s_max, double I, double U_g, double U_c, double Ut_dro, double Ut_cel, double Ut_mam, double Rgv, double Rcv, int outputv)
+void ecrireParametres(int Nv, double sigv, int nbSv, int NbGenv, int NbPrelimv, int pasv, double s, double s_max, double I, double U_g, double U_c, double Ut_all, double Ut_male, double Ut_dro, double Ut_cel, double Ut_mam, double Rgv, double Rcv, int outputv)
 {
 	fprintf(fichierS,"\n_________________________________________\n"); // ERIC: "fprintf(FILE_ptr, string_format, var)" writes (string_format, var) to file stream
 	fprintf(fichierS,"\nN = %d", Nv);
@@ -81,6 +83,8 @@ void ecrireParametres(int Nv, double sigv, int nbSv, int NbGenv, int NbPrelimv, 
     fprintf(fichierS,", s = %g", I);
     fprintf(fichierS,", U_g = %g", U_g);
     fprintf(fichierS,", U_c = %g", U_c);
+    fprintf(fichierS,", Ut_all = %g", Ut_all);
+    fprintf(fichierS,", Ut_male = %g", Ut_male);
     fprintf(fichierS,", Ut_dro = %g", Ut_dro);
     fprintf(fichierS,", Ut_cel = %g", Ut_cel);
     fprintf(fichierS,", Ut_mam = %g", Ut_mam);

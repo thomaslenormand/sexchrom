@@ -30,9 +30,9 @@ struct ind
 
 void ouvrirFichierE();
 void ouvrirFichierS();
-void ecrireParametres(int Nv, double sigv, int nbSv, int NbGenv, int NbPrelimv, int pasv, double s, double s_max, double I, double U_g, double U_c, double Ut_dro, double Ut_cel, double Ut_mam, double Rgv, double Rgc, int outputv);
-bool lireFichier(int &Nr, double &sigr, int &nbSr, int &NbGenr, int &NbPrelimr, int &pasr, double &sr, double &s_maxr, double &Ir, double &U_gr, double &U_cr, double &Ut_dro, double &Ut_cel, double &Ut_mam, double &Rgr, double &Rcr, int &Rep, int &outputr);
-void recursion(int Nv, double sigv, int nbSv, int NbGenv, int NbPrelimv, int pasv, double s, double s_max, double I, double U_g, double U_c, double Ut_dro, double Ut_cel, double Ut_mam, double Rg, double Rc, int Rep, int output, double** allAverages);
+void ecrireParametres(int Nv, double sigv, int nbSv, int NbGenv, int NbPrelimv, int pasv, double s, double s_max, double I, double U_g, double U_c, double Ut_all, double Ut_male, double Ut_dro, double Ut_cel, double Ut_mam, double Rgv, double Rgc, int outputv);
+bool lireFichier(int &Nr, double &sigr, int &nbSr, int &NbGenr, int &NbPrelimr, int &pasr, double &sr, double &s_maxr, double &Ir, double &U_gr, double &U_cr, double &Ut_all, double &Ut_male, double &Ut_dro, double &Ut_cel, double &Ut_mam, double &Rgr, double &Rcr, int &Rep, int &outputr);
+void recursion(int Nv, double sigv, int nbSv, int NbGenv, int NbPrelimv, int pasv, double s, double s_max, double I, double U_g, double U_c, double Ut_all, double Ut_male, double Ut_dro, double Ut_cel, double Ut_mam, double Rg, double Rc, int Rep, int output, double** allAverages);
 double gammln(const double xx);
 double poisdev(const double xm);
 double gasdev();

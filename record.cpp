@@ -119,7 +119,7 @@ void record_averages(ind * pop, double * Wtot, double * popAve, int nbSv, int Nm
         popAve[i] = 0;
     
     WbarMales = 0;
-    mbar = 0; nbar = 0; obar = 0;
+    Allbar = 0; Malebar = 0; Drobar = 0; Celbar = 0; Mambar = 0;
     for (i = 0; i < Nmales; i++)
     {
         WbarMales += Wtot[i];

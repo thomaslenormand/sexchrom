@@ -36,7 +36,7 @@ Rc: genetic distance between a cis-regulator and its regulated gene !!! RECOMBIN
 
 
 
-void recursion(int Nv, double sigv, int nbSv, int NbGenv, int NbPrelimv, int pasv, double s, double s_max, double I, double U_g, double U_c, double Ut_dro, double Ut_cel, double Ut_mam, double Rg, double Rc, int Rep, int output, double** allAverages)
+void recursion(int Nv, double sigv, int nbSv, int NbGenv, int NbPrelimv, int pasv, double s, double s_max, double I, double U_g, double U_c, double Ut_all, double Ut_male, double Ut_dro, double Ut_cel, double Ut_mam, double Rg, double Rc, int Rep, int output, double** allAverages)
 {
 
 	int i, j, k, nm, gen, mut, p1, p2, indiv, site, chrom, off_sex, Nmales_1, Nfemales_1, NjuvM, NjuvF;
@@ -51,6 +51,8 @@ void recursion(int Nv, double sigv, int nbSv, int NbGenv, int NbPrelimv, int pas
     double MLength = Rg * (nbSv - 1) + Rc;
     double UgTot = 2*Nv*U_g*nbSv;
     double UcTot = 2*Nv*U_c*nbSv;
+    double UTot_all = 2*Nv*Ut_all;
+    double UTot_male = 2*Nv*Ut_male;
     double UTot_dro = 2*Nv*Ut_dro;
     double UTot_cel = 2*Nv*Ut_cel;
     double UTot_mam = 2*Nv*Ut_mam;
@@ -59,7 +61,7 @@ void recursion(int Nv, double sigv, int nbSv, int NbGenv, int NbPrelimv, int pas
     // creates result file (with parameter values in file name):
     char nomFichier[256];
     stringstream nomF;
-    nomF << "N" << Nv << "_nbS" << nbSv << "_NbPrelim" << NbPrelimv << "_s" << s << "_I" << I << "_sig" << sigv << "_Ug" << U_g << "_Uc" << U_c << "_Udro" << Ut_dro << "_Ucel" << Ut_cel << "_Umam" << Ut_mam << "_Rg" << Rg << "_Rc" << Rc << "_Rep" << Rep << ".txt"; // results file naming convention
+    nomF << "N" << Nv << "_nbS" << nbSv << "_NbPrelim" << NbPrelimv << "_s" << s << "_I" << I << "_sig" << sigv << "_Ug" << U_g << "_Uc" << U_c << "_Uall" << Ut_all << "_Umale" << Ut_male << "_Udro" << Ut_dro << "_Ucel" << Ut_cel << "_Umam" << Ut_mam << "_Rg" << Rg << "_Rc" << Rc << "_Rep" << Rep << ".txt"; // results file naming convention
     nomF >> nomFichier; // Writing "nomF" to nomFichier file
     ofstream fout;
     fout.open(nomFichier);
@@ -108,8 +110,8 @@ void recursion(int Nv, double sigv, int nbSv, int NbGenv, int NbPrelimv, int pas
         temp[i].cis = new double [2*nbSv];
 
         // TRANS regulators
-        pop[i].trans = new double [2*3]; // two chromosomes, three trans reg's (m,n,o) corresponding to different strategies
-        temp[i].trans = new double [2*3];
+        pop[i].trans = new double [2*5]; // two chromosomes, three trans reg's (m,n,o) corresponding to different strategies
+        temp[i].trans = new double [2*5];
 
         for (k = 0; k < nbSv; k++)
         {
@@ -120,13 +122,18 @@ void recursion(int Nv, double sigv, int nbSv, int NbGenv, int NbPrelimv, int pas
         }
 
         // Initialize trans multiplier coefficients: m = 0, n = 0, o = 0 since exp(0) = 1
-        pop[i].trans[0] = 1; // Chrom 1
-        pop[i].trans[1] = 1;
-        pop[i].trans[2] = 1;
-
-        pop[i].trans[3] = 1; // Chrom 2
-        pop[i].trans[4] = 1;
-        pop[i].trans[5] = 1;
+        // Chrom 1:
+	pop[i].trans[0] = 1; // general
+        pop[i].trans[1] = 1; // X+Y male
+        pop[i].trans[2] = 1; // X male
+	pop[i].trans[3] = 1; // X1+X2 female
+        pop[i].trans[4] = 1; // X1 female
+		
+        pop[i].trans[5] = 1; // Chrom 2
+	pop[i].trans[6] = 1;
+	pop[i].trans[7] = 1;
+	pop[i].trans[8] = 1;
+	pop[i].trans[9] = 1;
     }
 
   	// generations:
@@ -173,7 +180,41 @@ void recursion(int Nv, double sigv, int nbSv, int NbGenv, int NbPrelimv, int pas
         }
 
         // Trans mutations
-        if (UTot_dro > 0)
+        if (UTot_all > 0)
+        {
+            mut = int(poisdev(UTot_all)); // 2Nu number of expected mutations in total population
+//           cout << "\n trans mut: " << mut;
+            // ??? HOW TO DO ???
+            for (nm = 0; nm < mut; nm++)
+            {
+                indiv = rnd.randInt(N_1);
+                chrom = rnd.randInt(1);
+ //              cout << "\n ind: " << ind << "  site: " << site << "  chrom: " << chrom;
+
+                // draw mutational effect on fitness from Gaussian distribution
+                dt = sigv * gasdev(); // TURN THIS ON FOR: Continuous Mutation Effect
+                // dt = s; // TURN THIS ON FOR: Fixed Mutation Effect
+                pop[indiv].trans[chrom*5+0] += dt; // mutate "m"
+            }
+        }
+	if (UTot_male > 0)
+        {
+            mut = int(poisdev(UTot_male)); // 2Nu number of expected mutations in total population
+//           cout << "\n trans mut: " << mut;
+            // ??? HOW TO DO ???
+            for (nm = 0; nm < mut; nm++)
+            {
+                indiv = rnd.randInt(N_1);
+                chrom = rnd.randInt(1);
+ //              cout << "\n ind: " << ind << "  site: " << site << "  chrom: " << chrom;
+
+                // draw mutational effect on fitness from Gaussian distribution
+                dt = sigv * gasdev(); // TURN THIS ON FOR: Continuous Mutation Effect
+                // dt = s; // TURN THIS ON FOR: Fixed Mutation Effect
+                pop[indiv].trans[chrom*5+1] += dt; // mutate "m"
+            }
+        }
+	if (UTot_dro > 0)
         {
             mut = int(poisdev(UTot_dro)); // 2Nu number of expected mutations in total population
 //           cout << "\n trans mut: " << mut;
@@ -187,7 +228,7 @@ void recursion(int Nv, double sigv, int nbSv, int NbGenv, int NbPrelimv, int pas
                 // draw mutational effect on fitness from Gaussian distribution
                 dt = sigv * gasdev(); // TURN THIS ON FOR: Continuous Mutation Effect
                 // dt = s; // TURN THIS ON FOR: Fixed Mutation Effect
-                pop[indiv].trans[chrom*3+0] += dt; // mutate "m"
+                pop[indiv].trans[chrom*5+2] += dt; // mutate "m"
             }
         }
         if (UTot_cel > 0)
@@ -204,7 +245,7 @@ void recursion(int Nv, double sigv, int nbSv, int NbGenv, int NbPrelimv, int pas
                 // draw mutational effect on fitness from Gaussian distribution
                 dt = sigv * gasdev(); // TURN THIS ON FOR: Continuous Mutation Effect
                 // dt = s; // TURN THIS ON FOR: Fixed Mutation Effect
-                pop[indiv].trans[chrom*3+1] += dt; // mutate "m"
+                pop[indiv].trans[chrom*5+3] += dt; // mutate "m"
             }
         }
         if (UTot_mam > 0)
@@ -221,7 +262,7 @@ void recursion(int Nv, double sigv, int nbSv, int NbGenv, int NbPrelimv, int pas
                 // draw mutational effect on fitness from Gaussian distribution
                 dt = sigv * gasdev(); // TURN THIS ON FOR: Continuous Mutation Effect
                 // dt = s; // TURN THIS ON FOR: Fixed Mutation Effect
-                pop[indiv].trans[chrom*3+2] += dt; // mutate "m"
+                pop[indiv].trans[chrom*5+4] += dt; // mutate "m"
             }
         }
 

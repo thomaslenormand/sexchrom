@@ -42,7 +42,7 @@ int main()
 	// END ERIC
 
 	int repet,i, j, Nt, nbS, NbGen, NbPrelim, pas, Rep, output; // ERIC: declare integer variables (see above)
-	double sig, s, s_max, I, U_g, U_c, Ut_dro, Ut_cel, Ut_mam, Rg, Rc; // ERIC: declare double variables (see above)
+	double sig, s, s_max, I, U_g, U_c, Ut_all, Ut_male, Ut_dro, Ut_cel, Ut_mam, Rg, Rc; // ERIC: declare double variables (see above)
 
 	// opens input and output files:
 
@@ -56,7 +56,7 @@ int main()
 
     do
     {
-        fin = lireFichier(Nt, sig, nbS, NbGen, NbPrelim, pas, s, s_max, I, U_g, U_c, Ut_dro, Ut_cel, Ut_mam, Rg, Rc, Rep, output); // ERIC: see "fichiers.cpp"; reads parameters from input file
+        fin = lireFichier(Nt, sig, nbS, NbGen, NbPrelim, pas, s, s_max, I, U_g, U_c, Ut_all, Ut_male, Ut_dro, Ut_cel, Ut_mam, Rg, Rc, Rep, output); // ERIC: see "fichiers.cpp"; reads parameters from input file
 
 
 
@@ -64,13 +64,13 @@ int main()
         {
             double** allAverages = new double *[(NbGen / pas) + 1];
             for(i = 0; i < (NbGen / pas) + 1; i++)
-                allAverages[i] = new double[17];
+                allAverages[i] = new double[19];
 
             for(i = 0; i < (NbGen / pas) + 1; i++)
-                for (j = 0; j < 17; j++)
+                for (j = 0; j < 19; j++)
                     allAverages[i][j] = 0;
 
-            ecrireParametres(Nt, sig, nbS, NbGen, NbPrelim, pas, s, s_max, I, U_g, U_c, Ut_dro, Ut_cel, Ut_mam, Rg, Rc, output); // ERIC: see "fichiers.cpp"; writes to the output file
+            ecrireParametres(Nt, sig, nbS, NbGen, NbPrelim, pas, s, s_max, I, U_g, U_c, Ut_all, Ut_male, Ut_dro, Ut_cel, Ut_mam, Rg, Rc, output); // ERIC: see "fichiers.cpp"; writes to the output file
 
             // runs the simulation:
             // ERIC: "recursion" is defined in "mutations.h" and is explicit in "recursion_bis.cpp"
@@ -78,18 +78,18 @@ int main()
             //cout << "Nt: " << Nt << "sig: " << sig << "nbS: " << nbS << NbGen << pas << alpha << s << U_g << U_c << U_t;
             for (repet = 0; repet < Rep; repet++)
             {
-                recursion(Nt, sig, nbS, NbGen, NbPrelim, pas, s, s_max, I, U_g, U_c, Ut_dro, Ut_cel, Ut_mam, Rg, Rc, repet, output, allAverages); // ERIC: see "recursion_bis.cpp"
+                recursion(Nt, sig, nbS, NbGen, NbPrelim, pas, s, s_max, I, U_g, U_c, Ut_all, Ut_male, Ut_dro, Ut_cel, Ut_mam, Rg, Rc, repet, output, allAverages); // ERIC: see "recursion_bis.cpp"
 
                 char nomFichier[256];
                 stringstream nomF;
-                nomF << "summary_N" << Nt << "_nbS" << nbS << "_NbPrelim" << NbPrelim << "_s" << s << "_I" << I << "_sig" << sig << "_Ug" << U_g << "_Uc" << U_c << "_Udro" << Ut_dro << "_Ucel" << Ut_cel << "_Umam" << Ut_mam << "_Rg" << Rg << "_Rc" << Rc <<".txt"; // results file naming convention
+                nomF << "summary_N" << Nt << "_nbS" << nbS << "_NbPrelim" << NbPrelim << "_s" << s << "_I" << I << "_sig" << sig << "_Ug" << U_g << "_Uc" << U_c << "_Uall" << Ut_all << "_Umale" << Ut_male << "_Udro" << Ut_dro << "_Ucel" << Ut_cel << "_Umam" << Ut_mam << "_Rg" << Rg << "_Rc" << Rc <<".txt"; // results file naming convention
                 nomF >> nomFichier; // Writing "nomF" to nomFichier file
                 fout.open(nomFichier);
                 fout<<repet+1<< endl;
                 for(i = 0; i < (NbGen / pas) + 1; i++)
                 {
                     fout << i*pas << " ";
-		    for (j = 0; j < 17; j++)
+		    for (j = 0; j < 19; j++)
                         fout << allAverages[i][j] << " ";
                     fout << endl;
                 }

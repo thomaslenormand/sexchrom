@@ -10,8 +10,10 @@ double Wmale(ind &parent, double expdom, double smax, double Qopt, double I, int
     double w = 1.0;
     double e1, e2, c1, c2, explv, h, effectLocus,explvscaled;
 
-    double transDro = (((parent.trans[0] > 0) ? parent.trans[0] : 0) + ((parent.trans[3] > 0) ? parent.trans[3] : 0))/2; // the effect of each allele is set to zero if negative
-
+    double transAll = (((parent.trans[0] > 0) ? parent.trans[0] : 0) + ((parent.trans[5] > 0) ? parent.trans[5] : 0))/2; // the effect of each allele is set to zero if negative
+    double transMale = (((parent.trans[1] > 0) ? parent.trans[1] : 0) + ((parent.trans[6] > 0) ? parent.trans[6] : 0))/2; // the effect of each allele is set to zero if negative
+    double transDro = (((parent.trans[2] > 0) ? parent.trans[2] : 0) + ((parent.trans[7] > 0) ? parent.trans[7] : 0))/2; // the effect of each allele is set to zero if negative
+    
     for (j = 0; j < nbS; j++)
     {
         allele1 = j;
@@ -20,7 +22,7 @@ double Wmale(ind &parent, double expdom, double smax, double Qopt, double I, int
         e1 = ((parent.cis[allele1] > 0) ? parent.cis[allele1] : 0);  // cis_y
         e2 = ((parent.cis[allele2] > 0) ? parent.cis[allele2] : 0) * transDro;  // (m1+m2)/2 * cis_x
 
-        explv = e1 + e2; // (m1+m2)/2 * cis_x + cis_y
+        explv = (e1 + e2)  * transMale * transAll; // (m1+m2)/2 * cis_x + cis_y
         //stabilizing selection fitness effect
         //                   w = w * exp(-I*pow((explv-Qopt),2)); // OLD
 
@@ -77,8 +79,9 @@ double Wfemale(ind &parent, double expdom, double smax, double Qopt, double I, i
     double e1, e2, c1, c2, explv, h, effectLocus,explvscaled;
     int allele1, allele2;
 
-    double transMam = (((parent.trans[2] > 0) ? parent.trans[2] : 0) + ((parent.trans[5] > 0) ? parent.trans[5] : 0))/2;
-    double transCel = (((parent.trans[1] > 0) ? parent.trans[1] : 0) + ((parent.trans[4] > 0) ? parent.trans[4] : 0))/2;
+    double transAll = (((parent.trans[0] > 0) ? parent.trans[0] : 0) + ((parent.trans[5] > 0) ? parent.trans[5] : 0))/2;
+    double transMam = (((parent.trans[4] > 0) ? parent.trans[4] : 0) + ((parent.trans[9] > 0) ? parent.trans[9] : 0))/2;
+    double transCel = (((parent.trans[3] > 0) ? parent.trans[3] : 0) + ((parent.trans[8] > 0) ? parent.trans[8] : 0))/2;
 
     int chrom = rnd.randInt(1);// pick random x
 
@@ -92,7 +95,7 @@ double Wfemale(ind &parent, double expdom, double smax, double Qopt, double I, i
             // (n1+n2)/2 * [(o1+o2)/2*cis_x1 + cis_x2]
             e1 = transMam * ((parent.cis[allele1] > 0) ? parent.cis[allele1] : 0);
             e2 = ((parent.cis[allele2] > 0) ? parent.cis[allele2] : 0);
-            explv = (e1 + e2) * transCel;
+            explv = (e1 + e2) * transCel * transAll;
 
             if (explv == 0)
                 w *= 1 - smax;
@@ -146,7 +149,7 @@ double Wfemale(ind &parent, double expdom, double smax, double Qopt, double I, i
             // (n1+n2)/2 * [(o1+o2)/2*cis_x2 + cis_x1]
             e2 = transMam * ((parent.cis[allele2] > 0) ? parent.cis[allele2] : 0);
             e1 = ((parent.cis[allele1] > 0) ? parent.cis[allele1] : 0);
-            explv = (e1 + e2) * transCel;
+            explv = (e1 + e2) * transCel * transAll;
 
             if (explv == 0)
                 w *= 1 - smax;

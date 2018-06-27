@@ -112,15 +112,15 @@ void recInit(ind &offspring, ind &father, ind &mother, double Rg, double Rc, dou
 
     // TRANS REGULATORS
 
-    for (i = 0; i < 3; i++)
+    for (i = 0; i < 5; i++)
     {
         // paternally inherited trans modifiers:
         ChrInit = rnd.randInt(1);
-        offspring.trans[i] = father.trans[ChrInit*3+i];
+        offspring.trans[i] = father.trans[ChrInit*5+i];
 
         // maternally inherited trans modifiers:
         ChrInit = rnd.randInt(1);
-        offspring.trans[i+3] = mother.trans[ChrInit*3+i];
+        offspring.trans[i+5] = mother.trans[ChrInit*5+i];
     }
 }
 
@@ -193,14 +193,14 @@ void rec(ind &offspring, ind &father, ind &mother, double Rg, double Rc, double 
 
     // TRANS REGULATORS
 
-    for (i = 0; i < 3; i++)
+    for (i = 0; i < 5; i++)
     {
         // paternally inherited trans modifiers:
         ChrInit = rnd.randInt(1);
-        offspring.trans[i] = father.trans[ChrInit*3+i];
+        offspring.trans[i] = father.trans[ChrInit*5+i];
 
         // maternally inherited trans modifiers:
         ChrInit = rnd.randInt(1);
-        offspring.trans[i+3] = mother.trans[ChrInit*3+i];
+        offspring.trans[i+5] = mother.trans[ChrInit*5+i];
     }
 }
